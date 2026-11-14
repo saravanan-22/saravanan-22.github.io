@@ -196,7 +196,7 @@ function Board({ active }: { active: number }) {
             {phase.topics.map((t, i) => (
               <motion.li
                 key={t.name}
-                className="hairline origin-top rounded-sm border bg-[#121110]/90 p-3.5 [backface-visibility:hidden] md:p-4"
+                className="hairline origin-top rounded-sm border bg-ink/60 backdrop-blur-md p-3.5 [backface-visibility:hidden] md:p-4"
                 variants={{
                   in: { rotateX: -95, opacity: 0 },
                   show: {
@@ -261,7 +261,7 @@ export default function Roadmap() {
             />
             <Board active={active} />
           </div>
-          <div className="hairline relative order-1 min-h-0 overflow-hidden rounded-md border bg-[#0d0c0b]/80 md:order-2 md:col-span-7">
+          <div className="hairline relative order-1 min-h-0 overflow-hidden rounded-md border bg-ink/45 backdrop-blur-md md:order-2 md:col-span-7">
             <Diagram p={scrollYProgress} active={active} />
             <p className="label absolute bottom-3 left-4 hidden md:block">Architecture I’m learning to build · grows as you scroll</p>
           </div>

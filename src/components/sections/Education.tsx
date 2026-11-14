@@ -67,7 +67,7 @@ function DealtCard({
     <motion.article
       data-card
       style={{ x, y, rotate, scale, boxShadow: shadow, zIndex }}
-      className="hairline relative flex min-h-0 flex-col justify-between rounded-sm border bg-[#141311] p-4 md:p-7"
+      className="hairline relative flex min-h-0 flex-col justify-between rounded-sm border bg-ink/60 backdrop-blur-lg p-4 md:p-7"
     >
       <div className="flex items-start justify-between gap-3">
         <span className={`label ${card.kind === "Education" ? "!text-gold" : ""}`}>{card.kind}</span>

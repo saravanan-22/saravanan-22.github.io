@@ -67,7 +67,7 @@ function ApiPanel() {
   const call = loanDocsApi[active];
 
   return (
-    <div className="hairline overflow-hidden rounded-md border bg-[#0f0e0c]/90 shadow-[0_40px_120px_-40px_rgb(0_0_0/0.8)] backdrop-blur">
+    <div className="hairline overflow-hidden rounded-md border bg-ink/55 shadow-[0_40px_120px_-40px_rgb(0_0_0/0.8)] backdrop-blur">
       <div className="hairline flex items-center justify-between gap-4 border-b px-4 py-3">
         <div className="flex gap-1.5" aria-hidden>
           <span className="h-2.5 w-2.5 rounded-full bg-bone/15" />
@@ -186,11 +186,11 @@ function LoanDocs() {
       </div>
 
       {/* Modules */}
-      <div className="mt-20 grid gap-px overflow-hidden rounded-sm border border-bone/12 bg-bone/12 md:mt-28 md:grid-cols-2">
+      <div className="mt-20 grid overflow-hidden rounded-sm border-t border-l border-bone/15 md:mt-28 md:grid-cols-2">
         {p.modules.map((m, i) => (
           <div key={m.name} className="relative h-full">
             <Blinds />
-            <div className="group flex h-full flex-col bg-ink p-7 transition-colors duration-500 hover:bg-[#141311] md:p-10">
+            <div className="group flex h-full flex-col border-r border-b border-bone/15 bg-ink/45 backdrop-blur-md p-7 transition-colors duration-500 hover:bg-ink/60 md:p-10">
               <div className="flex justify-between">
                 <span className="label">{pad(i + 1)}</span>
                 <span className="label !text-gold">{m.tag}</span>

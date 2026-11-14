@@ -49,7 +49,7 @@ function DeckCard({
       <motion.article
         style={{ scale, top: `calc(-4vh + ${i * 28}px)` }}
         className={`hairline relative flex h-[70svh] w-full max-w-6xl origin-top flex-col justify-between overflow-hidden rounded-sm border p-7 md:p-12 ${
-          card.next ? "bg-bone text-ink" : "bg-[#121110]"
+          card.next ? "bg-bone/90 text-ink backdrop-blur-xl" : "bg-ink/55 backdrop-blur-xl"
         }`}
       >
         <div className="flex items-start justify-between gap-6">

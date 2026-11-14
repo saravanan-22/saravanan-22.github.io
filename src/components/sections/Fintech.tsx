@@ -43,7 +43,7 @@ function AchievementBlock({
 }
 
 const frame =
-  "hairline relative overflow-hidden rounded-md border bg-[radial-gradient(ellipse_at_50%_40%,#1c1915,#0d0c0b_70%)]";
+  "hairline relative overflow-hidden rounded-md border bg-ink/45 backdrop-blur-md";
 
 /** Phones/tablets: the illustration sits above its text and plays when visible. */
 function MobileVisual({ kind }: { kind: VisualKind }) {
@@ -194,11 +194,11 @@ function WorkAreas() {
         </Reveal>
       </div>
 
-      <div className="grid gap-px overflow-hidden rounded-sm border border-bone/12 bg-bone/12 md:grid-cols-2">
+      <div className="grid overflow-hidden rounded-sm border-t border-l border-bone/15 md:grid-cols-2">
         {workAreas.map((area, i) => (
           <motion.article
             key={area.title}
-            className="group relative bg-ink p-7 transition-colors duration-500 hover:bg-[#121110] md:p-10"
+            className="group relative border-r border-b border-bone/15 bg-ink/45 backdrop-blur-md p-7 transition-colors duration-500 hover:bg-ink/60 md:p-10"
             initial="off"
             whileInView="on"
             viewport={{ once: true, margin: "-12% 0px" }}

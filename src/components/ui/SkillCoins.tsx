@@ -276,9 +276,6 @@ export default function SkillCoins() {
     const p = local(e);
     s.px = p.x;
     s.py = p.y;
-    // Parallax for the background watermark (-1 … 1)
-    box.current?.style.setProperty("--mx", String((p.x / s.W) * 2 - 1));
-    box.current?.style.setProperty("--my", String((p.y / s.H) * 2 - 1));
     if (s.drag >= 0) {
       const i = s.drag;
       const cap = (v: number) => Math.max(-3000, Math.min(3000, v));
@@ -311,22 +308,12 @@ export default function SkillCoins() {
           sim.current.px = sim.current.py = -9999;
         }}
         data-cursor="hover"
-        className="hairline relative h-[380px] touch-pan-y overflow-hidden rounded-md border bg-[radial-gradient(ellipse_at_50%_120%,#1f1a12,#0b0a09_65%)] select-none md:h-[440px]"
+        className="hairline relative h-[380px] touch-pan-y overflow-hidden rounded-md border bg-ink/30 backdrop-blur-sm select-none md:h-[440px]"
       >
-        {/* Background: perspective grid floor, watermark, impact effects */}
+        {/* Background: perspective grid floor, impact effects */}
         <div aria-hidden className="pointer-events-none absolute inset-x-[-25%] bottom-0 h-[70%] [perspective:500px]">
           <div className="coin-floor absolute inset-0 origin-bottom [transform:rotateX(62deg)] [mask-image:linear-gradient(to_top,#000_10%,transparent_85%)]" />
         </div>
-        <span
-          aria-hidden
-          className="display pointer-events-none absolute top-[36%] left-1/2 text-[24vw] whitespace-nowrap text-transparent transition-transform duration-700 ease-out [-webkit-text-stroke:1.5px_rgb(216_166_87/0.32)] md:text-[17vw]"
-          style={{
-            transform:
-              "translate(calc(-50% + var(--mx, 0) * -28px), calc(-58% + var(--my, 0) * -16px))",
-          }}
-        >
-          TOOLKIT
-        </span>
         {/* Gold dust drifting up through the empty space */}
         {Array.from({ length: 18 }, (_, i) => (
           <span

@@ -53,7 +53,7 @@ export default function Stack() {
             <TiltGlare key={g.group} className="rounded-sm">
             <article
               data-cursor="hover"
-              className="hairline group relative flex h-[max(62svh,31rem)] w-[80vw] shrink-0 flex-col justify-between overflow-hidden rounded-sm border bg-[#0f0e0c]/85 p-7 transition-colors duration-500 hover:border-gold/60 md:w-[40vw] md:p-10"
+              className="hairline group relative flex h-[max(62svh,31rem)] w-[80vw] shrink-0 flex-col justify-between overflow-hidden rounded-sm border bg-ink/45 backdrop-blur-md p-7 transition-colors duration-500 hover:border-gold/60 md:w-[40vw] md:p-10"
             >
               <div className="flex justify-between">
                 <span className="label">

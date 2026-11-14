@@ -1,14 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
-
-// The WebGL map only runs in the browser and loads after the page content.
-const Scene = dynamic(() => import("./Scene"), { ssr: false });
+import CinematicVideo from "./CinematicVideo";
 
 export default function Background() {
   return (
-    <div className="fixed inset-0 z-0" aria-hidden>
-      <Scene />
+    <div className="fixed inset-0 z-0 overflow-hidden bg-ink" aria-hidden>
+      <CinematicVideo />
     </div>
   );
 }

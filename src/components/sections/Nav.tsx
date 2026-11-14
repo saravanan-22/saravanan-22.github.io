@@ -11,7 +11,7 @@ export default function Nav() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
+      <header className="fixed inset-x-0 top-0 z-50 text-bone [text-shadow:0_1px_2px_rgb(0_0_0/0.5),0_4px_18px_rgb(0_0_0/0.45)]">
         <nav className="grid grid-cols-2 items-start gap-6 px-5 py-5 text-sm md:grid-cols-12 md:px-10 md:py-7">
           <a href="#top" className="font-medium tracking-tight md:col-span-3">
             {profile.name}

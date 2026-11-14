@@ -56,6 +56,21 @@ body {
   color: var(--color-muted);
 }
 
+/* Type over the cinematic footage: a soft shadow keeps it readable without dark overlays */
+main {
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.35),
+    0 6px 28px rgb(0 0 0 / 0.35);
+}
+main .accent {
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.45),
+    0 4px 22px rgb(0 0 0 / 0.55);
+}
+main .label {
+  color: rgb(237 232 224 / 0.62);
+}
+
 .hairline {
   border-color: rgb(237 232 224 / 0.12);
 }
