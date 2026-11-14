@@ -1,0 +1,262 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+@theme {
+  --color-ink: #0b0a09;
+  --color-bone: #ede8e0;
+  --color-muted: #8c867d;
+  --color-gold: #d8a657;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter-tight);
+  --font-serif: var(--font-instrument);
+  --font-mono: var(--font-jetbrains);
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+  /* clip (not hidden) so pinned/sticky scenes keep working */
+  overflow-x: clip;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-bone);
+  overflow-x: clip;
+  font-feature-settings: "ss01", "cv11";
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+
+/* ---------- Type helpers ---------- */
+.display {
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+}
+
+.accent {
+  font-family: var(--font-instrument);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--color-gold);
+}
+
+.label {
+  font-family: var(--font-jetbrains);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.hairline {
+  border-color: rgb(237 232 224 / 0.12);
+}
+
+/* Underline that draws in on hover */
+.link-draw {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-draw:hover {
+  background-size: 100% 1px;
+}
+
+/* ---------- Custom cursor ---------- */
+.has-cursor,
+.has-cursor * {
+  cursor: none !important;
+}
+
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+
+.cursor-inner {
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 9999px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  transition:
+    width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s,
+    transform 0.2s;
+}
+
+.cursor[data-mode="hover"] .cursor-inner {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+}
+
+.cursor[data-mode="view"] {
+  mix-blend-mode: normal;
+}
+
+.cursor[data-mode="view"] .cursor-inner {
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  background: var(--color-bone);
+}
+
+.cursor[data-down="true"] .cursor-inner {
+  transform: scale(0.75);
+}
+
+.cursor-label {
+  font-family: var(--font-jetbrains);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cursor[data-mode="view"] .cursor-label {
+  opacity: 1;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Border beam: a light that travels around a card's border on hover */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+.beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0%,
+    transparent 72%,
+    rgb(216 166 87 / 0.95) 88%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+  animation: beam-spin 2.8s linear infinite;
+}
+.beam:hover::before {
+  opacity: 1;
+}
+
+/* Tech-stack orbit (LoanDocs): rings spin, chips counter-spin to stay upright */
+@keyframes orbit-cw {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes orbit-ccw {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.orbit-spin {
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.orbit-cw {
+  animation-name: orbit-cw;
+}
+.orbit-ccw {
+  animation-name: orbit-ccw;
+}
+.orbit:hover .orbit-spin {
+  animation-play-state: paused;
+}
+
+/* Skill-coin jar: a perspective grid floor that slowly scrolls toward the viewer */
+@keyframes coin-floor {
+  to {
+    background-position:
+      0 48px,
+      0 0;
+  }
+}
+.coin-floor {
+  background-image:
+    linear-gradient(rgb(216 166 87 / 0.38) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(216 166 87 / 0.24) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: coin-floor 2.4s linear infinite;
+}
+
+/* Gold dust rising slowly through the jar */
+@keyframes coin-dust {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-460px) translateX(24px);
+    opacity: 0;
+  }
+}
+.coin-dust {
+  animation: coin-dust linear infinite;
+  box-shadow: 0 0 8px rgb(216 166 87 / 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot,
+  .orbit-spin,
+  .coin-floor,
+  .coin-dust {
+    animation: none;
+  }
+  .coin-dust {
+    display: none;
+  }
+}
