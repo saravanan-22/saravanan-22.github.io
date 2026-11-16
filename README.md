@@ -10,7 +10,7 @@ My personal portfolio site. It covers two years of building a digital lending pl
 
 - **Interactive 3D background:** a WebGL scene built with Three.js and React Three Fiber that reacts to scroll and mouse movement
 - **Smooth, scroll-driven motion:** Lenis smooth scrolling with GSAP and Motion animations, plus text scramble, odometer counters, tilt-glare cards and a magnetic custom cursor
-- **Skill deck:** four core-strength cards that deal out from a fanned deck when the section scrolls into view, then stay still
+- **Skill deck:** four core-strength cards that deal out from a fanned deck when the section scrolls into view, then flip over in 3D on hover or tap to show where each skill was used
 - **LendOCR case study:** my OCR API for Indian KYC and loan documents, with real API responses, live mini-demos (number validation, bank statement analysis, API keys and rate limits, background job queue), the request pipeline, tech stack and real commit history
 - **Fast and static:** fully pre-rendered with `output: "export"` and hosted free on GitHub Pages
 - **Accessible:** respects `prefers-reduced-motion`

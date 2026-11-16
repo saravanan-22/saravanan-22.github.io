@@ -83,12 +83,41 @@ export const skills = [
   },
 ];
 
-// Four core strengths, dealt out as cards between About and Stack.
+// Four core strengths, dealt out as cards between About and Stack. The back of
+// each card says where I have used them for real.
 export const strengths = [
-  { title: "Back end", items: ["Go Fiber", "FastAPI", "MySQL", "PostgreSQL", "Redis"] },
-  { title: "Front end", items: ["React", "TypeScript", "Tailwind CSS", "Shadcn UI"] },
-  { title: "AI / OCR", items: ["RapidOCR", "PaddleOCR-VL", "vLLM", "ONNX Runtime GPU"] },
-  { title: "Lending", items: ["Loan origination", "KYC checks", "Credit appraisal", "Collections"] },
+  {
+    title: "Back end",
+    items: ["Go Fiber", "FastAPI", "MySQL", "PostgreSQL", "Redis"],
+    used: [
+      { where: "At work", what: "Go Fiber, MySQL and Redis back ends for a lending platform: loan rules, reports, partner payouts" },
+      { where: "LendOCR", what: "FastAPI and PostgreSQL: API keys, rate limits, a job queue and signed webhooks" },
+    ],
+  },
+  {
+    title: "Front end",
+    items: ["React", "TypeScript", "Tailwind CSS", "Shadcn UI"],
+    used: [
+      { where: "At work", what: "React and TypeScript screens for staff, partners and customers, with config-driven loan forms" },
+      { where: "This site", what: "Next.js, React 19, Motion and Three.js" },
+    ],
+  },
+  {
+    title: "AI / OCR",
+    items: ["RapidOCR", "PaddleOCR-VL", "vLLM", "ONNX Runtime GPU"],
+    used: [
+      { where: "At work", what: "Integrated an AI / OCR service that reads 15+ Indian document types" },
+      { where: "LendOCR", what: "RapidOCR on the GPU and PaddleOCR-VL on vLLM: about 0.15 s per card" },
+    ],
+  },
+  {
+    title: "Lending",
+    items: ["Loan origination", "KYC checks", "Credit appraisal", "Collections"],
+    used: [
+      { where: "At work", what: "Loan journeys, KYC, CAM reports, collections and partner commission with GST" },
+      { where: "LendOCR", what: "Bank statement analysis: salary, EMIs, cheque bounces and tamper checks" },
+    ],
+  },
 ];
 
 export const experience = [
