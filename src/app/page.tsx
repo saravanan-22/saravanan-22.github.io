@@ -12,7 +12,7 @@ import Work from "@/components/sections/Work";
 import Cursor from "@/components/ui/Cursor";
 import Loader from "@/components/ui/Loader";
 import SmoothScroll from "@/components/ui/SmoothScroll";
-import SkillCoins from "@/components/ui/SkillCoins";
+import SkillTicker from "@/components/ui/SkillTicker";
 
 export default function Home() {
   return (
@@ -26,7 +26,7 @@ export default function Home() {
       <main className="relative z-10">
         <Hero />
         <About />
-        <SkillCoins />
+        <SkillTicker />
         <Stack />
         <Experience />
         <Fintech />

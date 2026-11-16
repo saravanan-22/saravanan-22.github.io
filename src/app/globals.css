@@ -189,7 +189,7 @@ body {
   opacity: 1;
 }
 
-/* Tech-stack orbit (LoanDocs): rings spin, chips counter-spin to stay upright */
+/* Tech-stack orbit (LendOCR): rings spin, chips counter-spin to stay upright */
 @keyframes orbit-cw {
   to {
     transform: rotate(360deg);
@@ -214,49 +214,29 @@ body {
   animation-play-state: paused;
 }
 
-/* Skill-coin jar: a perspective grid floor that slowly scrolls toward the viewer */
-@keyframes coin-floor {
+/* Skill ticker: two copies of a row slide by half their width, then loop */
+@keyframes ticker {
   to {
-    background-position:
-      0 48px,
-      0 0;
+    transform: translateX(-50%);
   }
 }
-.coin-floor {
-  background-image:
-    linear-gradient(rgb(216 166 87 / 0.38) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(216 166 87 / 0.24) 1px, transparent 1px);
-  background-size: 48px 48px;
-  animation: coin-floor 2.4s linear infinite;
+.ticker {
+  animation: ticker linear infinite;
 }
-
-/* Gold dust rising slowly through the jar */
-@keyframes coin-dust {
-  0% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateY(-460px) translateX(24px);
-    opacity: 0;
-  }
+.ticker-rev {
+  animation-direction: reverse;
 }
-.coin-dust {
-  animation: coin-dust linear infinite;
-  box-shadow: 0 0 8px rgb(216 166 87 / 0.8);
+.ticker-mask:hover .ticker {
+  animation-play-state: paused;
+}
+.ticker-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pulse-dot,
   .orbit-spin,
-  .coin-floor,
-  .coin-dust {
+  .ticker {
     animation: none;
-  }
-  .coin-dust {
-    display: none;
   }
 }
