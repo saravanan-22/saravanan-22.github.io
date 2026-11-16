@@ -83,6 +83,14 @@ export const skills = [
   },
 ];
 
+// Four core strengths, dealt out as cards between About and Stack.
+export const strengths = [
+  { title: "Back end", items: ["Go Fiber", "FastAPI", "MySQL", "PostgreSQL", "Redis"] },
+  { title: "Front end", items: ["React", "TypeScript", "Tailwind CSS", "Shadcn UI"] },
+  { title: "AI / OCR", items: ["RapidOCR", "PaddleOCR-VL", "vLLM", "ONNX Runtime GPU"] },
+  { title: "Lending", items: ["Loan origination", "KYC checks", "Credit appraisal", "Collections"] },
+];
+
 export const experience = [
   {
     role: "Full Stack Developer",

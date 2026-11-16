@@ -214,29 +214,9 @@ body {
   animation-play-state: paused;
 }
 
-/* Skill ticker: two copies of a row slide by half their width, then loop */
-@keyframes ticker {
-  to {
-    transform: translateX(-50%);
-  }
-}
-.ticker {
-  animation: ticker linear infinite;
-}
-.ticker-rev {
-  animation-direction: reverse;
-}
-.ticker-mask:hover .ticker {
-  animation-play-state: paused;
-}
-.ticker-mask {
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .pulse-dot,
-  .orbit-spin,
-  .ticker {
+  .orbit-spin {
     animation: none;
   }
 }
