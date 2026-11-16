@@ -11,7 +11,7 @@ My personal portfolio site. It covers two years of building a digital lending pl
 - **Interactive 3D background:** a WebGL scene built with Three.js and React Three Fiber that reacts to scroll and mouse movement
 - **Smooth, scroll-driven motion:** Lenis smooth scrolling with GSAP and Motion animations, plus text scramble, odometer counters, tilt-glare cards and a magnetic custom cursor
 - **Physics skill jar:** each skill is a coin that drops into a jar with simple circle physics, and you can grab and throw them
-- **Animated FinTech case study:** live mini-demos of LoanDocs modules (document reading, cross-document matching, document generation, loan calculators)
+- **LendOCR case study:** my OCR API for Indian KYC and loan documents, with real API responses, live mini-demos (number validation, bank statement analysis, API keys and rate limits, background job queue), the request pipeline, tech stack and real commit history
 - **Fast and static:** fully pre-rendered with `output: "export"` and hosted free on GitHub Pages
 - **Accessible:** respects `prefers-reduced-motion`
 - **Easy to edit:** all text lives in [`src/lib/content.ts`](src/lib/content.ts)

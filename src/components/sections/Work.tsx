@@ -3,12 +3,12 @@
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState, type ReactNode } from "react";
-import { learningProjects, loanDocs, loanDocsApi } from "@/lib/content";
+import { learningProjects, lendOcr, lendOcrApi } from "@/lib/content";
 import Reveal, { MaskLine, SectionLabel } from "@/components/ui/Reveal";
 import { AnimatedHeading } from "@/components/ui/SectionTitle";
 import DocFan from "@/components/visuals/DocFan";
-import { Blinds, CalcDemo, MatchDemo, MergeDemo, ValidatorDemo } from "@/components/visuals/ModuleDemos";
-import { BuildGraph, Pipeline, StackOrbit } from "@/components/visuals/LoanDocsAnimations";
+import { Blinds, KeysDemo, QueueDemo, StatementDemo, ValidatorDemo } from "@/components/visuals/ModuleDemos";
+import { BuildGraph, Pipeline, StackOrbit } from "@/components/visuals/LendOcrAnimations";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -53,18 +53,18 @@ function highlight(src: string): ReactNode[] {
   return out;
 }
 
-/** A small API console that cycles through Read → Calculate → Generate. */
+/** A small API console that cycles through real LendOCR responses. */
 function ApiPanel() {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
 
   useEffect(() => {
     if (!auto) return;
-    const id = setInterval(() => setActive((a) => (a + 1) % loanDocsApi.length), 5200);
+    const id = setInterval(() => setActive((a) => (a + 1) % lendOcrApi.length), 5200);
     return () => clearInterval(id);
   }, [auto]);
 
-  const call = loanDocsApi[active];
+  const call = lendOcrApi[active];
 
   return (
     <div className="hairline overflow-hidden rounded-md border bg-[#0f0e0c]/90 shadow-[0_40px_120px_-40px_rgb(0_0_0/0.8)] backdrop-blur">
@@ -75,7 +75,7 @@ function ApiPanel() {
           <span className="h-2.5 w-2.5 rounded-full bg-bone/15" />
         </div>
         <div role="tablist" aria-label="Sample API calls" className="flex gap-1">
-          {loanDocsApi.map((c, i) => (
+          {lendOcrApi.map((c, i) => (
             <button
               key={c.label}
               role="tab"
@@ -124,8 +124,8 @@ function ApiPanel() {
   );
 }
 
-function LoanDocs() {
-  const p = loanDocs;
+function LendOcr() {
+  const p = lendOcr;
   return (
     <article>
       <Reveal className="flex flex-wrap items-center justify-between gap-4">
@@ -133,12 +133,12 @@ function LoanDocs() {
           <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-gold" />
           Main project · {p.status} · Started {p.started}
         </p>
-        <p className="label">{p.license} · Self-hosted</p>
+        <p className="label">{p.label}</p>
       </Reveal>
 
       <h3 className="display mt-6 text-[22vw] md:text-[13vw]">
         <MaskLine>
-          Loan<span className="accent">Docs</span>
+          Lend<span className="accent">OCR</span>
         </MaskLine>
       </h3>
 
@@ -155,34 +155,45 @@ function LoanDocs() {
 
       {/* Problem / solution + live API console */}
       <div className="mt-16 grid gap-12 md:mt-24 md:grid-cols-12">
-        <div className="flex flex-col gap-10 md:col-span-5">
+        <div className="flex min-w-0 flex-col gap-10 md:col-span-5">
           <Reveal>
             <p className="label mb-3">The problem</p>
             <p className="text-lg leading-relaxed text-bone/75">{p.problem}</p>
           </Reveal>
           <Reveal delay={0.06}>
-            <p className="label mb-3">What I’m building</p>
+            <p className="label mb-3">What I built</p>
             <p className="text-lg leading-relaxed text-bone/75">{p.solution}</p>
           </Reveal>
           <Reveal delay={0.12} className="flex flex-wrap gap-x-8 gap-y-3 text-lg">
+            <a href={p.site} target="_blank" rel="noreferrer" className="link-draw">
+              Product website ↗
+            </a>
             {p.repo ? (
               <a href={p.repo} target="_blank" rel="noreferrer" className="link-draw">
                 Code on GitHub ↗
               </a>
             ) : (
-              <span className="text-bone/40">GitHub repo: coming soon</span>
-            )}
-            {p.demo && (
-              <a href={p.demo} target="_blank" rel="noreferrer" className="link-draw">
-                Live demo ↗
-              </a>
+              <span className="text-bone/40">Code: private repo, walkthrough on request</span>
             )}
           </Reveal>
         </div>
-        <Reveal delay={0.08} className="md:col-span-7">
+        <Reveal delay={0.08} className="min-w-0 md:col-span-7">
           <ApiPanel />
-          <p className="label mt-3">Planned REST API · sample data only</p>
+          <p className="label mt-3">Real API responses · synthetic sample documents</p>
         </Reveal>
+      </div>
+
+      {/* Measured results */}
+      <div className="mt-20 md:mt-28">
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-bone/12 bg-bone/12 md:grid-cols-4">
+          {p.results.map((r, i) => (
+            <Reveal key={r.label} delay={i * 0.05} className="bg-ink p-6 md:p-8">
+              <p className="display text-4xl text-gold md:text-5xl">{r.value}</p>
+              <p className="label mt-3">{r.label}</p>
+            </Reveal>
+          ))}
+        </div>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-bone/45">{p.resultsNote}</p>
       </div>
 
       {/* Modules */}
@@ -208,9 +219,9 @@ function LoanDocs() {
               </ul>
               <div className="mt-auto">
                 {i === 0 && <ValidatorDemo />}
-                {i === 1 && <MatchDemo />}
-                {i === 2 && <MergeDemo />}
-                {i === 3 && <CalcDemo />}
+                {i === 1 && <StatementDemo />}
+                {i === 2 && <KeysDemo />}
+                {i === 3 && <QueueDemo />}
               </div>
             </div>
           </div>
@@ -221,7 +232,7 @@ function LoanDocs() {
       <div className="mt-20 md:mt-28">
         <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <p className="label">How the parts fit together</p>
-          <p className="label">Live run · sample document</p>
+          <p className="label">One request, and a bulk job</p>
         </Reveal>
         <Pipeline />
       </div>
@@ -231,20 +242,22 @@ function LoanDocs() {
         <Reveal className="md:col-span-5">
           <p className="label mb-5">Tech stack</p>
           <h4 className="display text-5xl md:text-[4vw]">
-            Free, offline, <span className="accent">self-hosted</span>.
+            Open-source models, <span className="accent">production</span> plumbing.
           </h4>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-bone/65">
-            A Go core with open-source OCR and PDF engines around it. One Docker Compose command runs
-            everything, so customer data never leaves the lender’s own server.
+            A Python FastAPI service around free OCR models: RapidOCR on the GPU for speed, and
+            PaddleOCR-VL on vLLM for hard images. Postgres holds keys, usage and the job queue, nginx
+            spreads load over replicas, and one Docker Compose command runs it all on a lender’s own
+            servers.
           </p>
-          <p className="label mt-6">Inner ring: back end · Outer ring: OCR, PDF, front end, packaging</p>
+          <p className="label mt-6">Inner ring: core API · Outer ring: OCR models, infrastructure, monitoring, CI</p>
         </Reveal>
         <div className="md:col-span-6 md:col-start-7">
           <StackOrbit />
         </div>
       </div>
 
-      {/* 8-week plan as a commit graph */}
+      {/* Real build history as a commit graph */}
       <div className="mt-24 md:mt-32">
         <BuildGraph />
       </div>
@@ -319,9 +332,9 @@ export default function Work() {
       <AnimatedHeading
         variant="assemble"
         className="mb-16 text-[13vw] md:mb-24 md:text-[7vw]"
-        parts={[{ text: "Things I’m " }, { text: "building", accent: true }, { text: "." }]}
+        parts={[{ text: "Things I’ve " }, { text: "built", accent: true }, { text: "." }]}
       />
-      <LoanDocs />
+      <LendOcr />
       <LearningProjects />
     </section>
   );

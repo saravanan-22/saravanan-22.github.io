@@ -2,45 +2,45 @@
 
 import { motion, useInView, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { loanDocs } from "@/lib/content";
+import { lendOcr } from "@/lib/content";
 import FitBox from "@/components/ui/FitBox";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /* ================================================================ Pipeline
  * A document token runs through each stage; the stage lights up and prints
- * its output. The Generate lane starts a beat after the Read lane.
+ * its output. The background-job lane starts a beat after the extract lane.
  */
 
 type Stage = { name: string; out: string };
 
 const LANES: { label: string; stages: Stage[] }[] = [
   {
-    label: "Read",
+    label: "Extract",
     stages: [
-      { name: "Upload", out: "pan_sample.jpg" },
-      { name: "REST API (Go)", out: "POST /v1/ocr/extract" },
-      { name: "OCR engine", out: "128 words found" },
-      { name: "Field extractors", out: "5 fields" },
-      { name: "Validators", out: "4 / 4 checks pass" },
-      { name: "JSON + match score", out: "match 96%" },
+      { name: "Upload", out: "pan.jpg · 84 KB" },
+      { name: "API key + quota", out: "scope extract ✓" },
+      { name: "Detect type", out: "pan" },
+      { name: "RapidOCR (GPU)", out: "14 lines · 0.15 s" },
+      { name: "Validators", out: "3 / 3 checks pass" },
+      { name: "JSON", out: "needs_review: false" },
     ],
   },
   {
-    label: "Generate",
+    label: "Jobs",
     stages: [
-      { name: "Loan data", out: "₹5,00,000 · 36 mo" },
-      { name: "REST API (Go)", out: "POST /v1/pdf/…" },
-      { name: "Loan calculators", out: "EMI ₹16,251.22" },
-      { name: "HTML templates", out: "sanction-letter" },
-      { name: "Headless Chrome", out: "rendering…" },
-      { name: "PDF", out: "sanction.pdf · 84 KB" },
+      { name: "Bulk upload", out: "20 statements" },
+      { name: "POST /v1/jobs", out: "202 in 52 ms" },
+      { name: "Postgres queue", out: "SKIP LOCKED" },
+      { name: "Workers", out: "AES-256-GCM at rest" },
+      { name: "Statement analysis", out: "salary · EMI · bounces" },
+      { name: "Signed webhook", out: "job.succeeded → 200" },
     ],
   },
 ];
 
 const LAST = LANES[0].stages.length - 1;
-const LAG = 2; // Generate lane starts 2 ticks after Read
+const LAG = 2; // Jobs lane starts 2 ticks after Extract
 const HOLD = 3; // ticks to hold the finished state before looping
 
 function useLoop(active: boolean) {
@@ -182,7 +182,7 @@ function PipelineRun({ active }: { active: boolean }) {
  * Hover pauses the rotation.
  */
 
-const INNER = ["Go (Fiber)", "OpenAPI", "Go unit tests"];
+const INNER = lendOcr.core;
 
 function Ring({
   items,
@@ -232,7 +232,7 @@ function Ring({
 }
 
 export function StackOrbit() {
-  const outer = loanDocs.stack.filter((t) => !INNER.includes(t));
+  const outer = lendOcr.stack.filter((t) => !INNER.includes(t));
   return (
     <div className="orbit aspect-square w-full" data-cursor="hover">
       <FitBox w={520} h={520} max={1.1}>
@@ -256,7 +256,7 @@ export function StackOrbit() {
             <div className="absolute inset-0 grid place-items-center rounded-full border border-gold/60 bg-[radial-gradient(circle,#2a231a,#0f0e0c)] text-center">
               <div>
                 <p className="text-[19px] font-medium tracking-tight">
-                  Loan<span className="accent">Docs</span>
+                  Lend<span className="accent">OCR</span>
                 </p>
                 <p className="mt-1 font-mono text-[8px] tracking-[0.1em] text-gold uppercase">docker compose up</p>
               </div>
@@ -271,28 +271,27 @@ export function StackOrbit() {
 }
 
 /* ============================================================== Git graph
- * The 8-week plan as a commit history: the branch line draws with scroll and
- * each week lands as a commit, ending on the v1.0.0 tag.
+ * Real milestones from the repo as a commit history: the branch line draws with
+ * scroll and each milestone lands as a commit, ending on the test badge.
  */
 
-const HASHES = ["9f2c1ab", "4e7d03c", "b81a6f2", "c03e9d4", "7aa41f0", "e5b2c88", "1d9f7e3", "f60c2a1"];
-const WEEKS = loanDocs.roadmap;
+const STEPS = lendOcr.history;
 
 function useCommitIn(p: MotionValue<number>, i: number) {
-  const at = (i + 0.5) / WEEKS.length;
+  const at = (i + 0.5) / STEPS.length;
   return useTransform(p, [at - 0.06, at], [0, 1]);
 }
 
 function Commit({ i, p }: { i: number; p: MotionValue<number> }) {
-  const w = WEEKS[i];
+  const w = STEPS[i];
   const t = useCommitIn(p, i);
   const scale = useTransform(t, [0, 1], [0, 1]);
   const up = i % 2 === 0;
   const y = useTransform(t, [0, 1], [up ? 14 : -14, 0]);
-  const last = i === WEEKS.length - 1;
+  const last = i === STEPS.length - 1;
 
   return (
-    <div className="absolute top-1/2 -translate-x-1/2" style={{ left: `${((i + 0.5) / WEEKS.length) * 100}%` }}>
+    <div className="absolute top-1/2 -translate-x-1/2" style={{ left: `${((i + 0.5) / STEPS.length) * 100}%` }}>
       <motion.span
         style={{ scale }}
         className={`absolute top-0 left-0 block -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold ${
@@ -306,7 +305,7 @@ function Commit({ i, p }: { i: number; p: MotionValue<number> }) {
         <div className={`flex flex-col items-center text-center ${up ? "" : "flex-col-reverse"}`}>
           <div className={`flex flex-col gap-1 ${up ? "" : "flex-col-reverse"}`}>
             <p className="font-mono text-[0.64rem] tracking-[0.06em] text-gold">
-              {HASHES[i]} · week {w.week}
+              {w.hash}
             </p>
             <p className="text-[13px] leading-snug text-bone/75">
               <span className="font-mono text-[0.68rem] text-bone/45">{w.scope}: </span>
@@ -314,7 +313,7 @@ function Commit({ i, p }: { i: number; p: MotionValue<number> }) {
             </p>
             {last && (
               <span className="mx-auto mt-1 rounded-full bg-gold px-2.5 py-0.5 font-mono text-[0.66rem] font-medium text-ink">
-                tag v1.0.0
+                {lendOcr.historyEnd}
               </span>
             )}
           </div>
@@ -326,17 +325,17 @@ function Commit({ i, p }: { i: number; p: MotionValue<number> }) {
 }
 
 function MobileCommit({ i, p }: { i: number; p: MotionValue<number> }) {
-  const w = WEEKS[i];
+  const w = STEPS[i];
   const t = useCommitIn(p, i);
   const x = useTransform(t, [0, 1], [-12, 0]);
-  const last = i === WEEKS.length - 1;
+  const last = i === STEPS.length - 1;
   return (
     <motion.li style={{ opacity: t, x }} className="relative pl-7">
       <span
         className={`absolute top-1 -left-[1px] -translate-x-1/2 rounded-full border-2 border-gold ${last ? "h-4 w-4 bg-gold" : "h-3 w-3 bg-ink"}`}
       />
       <p className="font-mono text-[0.64rem] text-gold">
-        {HASHES[i]} · week {w.week}
+        {w.hash}
       </p>
       <p className="mt-0.5 text-sm leading-snug text-bone/75">
         <span className="font-mono text-[0.68rem] text-bone/45">{w.scope}: </span>
@@ -344,7 +343,7 @@ function MobileCommit({ i, p }: { i: number; p: MotionValue<number> }) {
       </p>
       {last && (
         <span className="mt-2 inline-block rounded-full bg-gold px-2.5 py-0.5 font-mono text-[0.66rem] font-medium text-ink">
-          tag v1.0.0
+          {lendOcr.historyEnd}
         </span>
       )}
     </motion.li>
@@ -359,7 +358,7 @@ export function BuildGraph() {
   return (
     <div ref={ref}>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <p className="label">8-week build plan</p>
+        <p className="label">Build history · real commits</p>
         <p className="font-mono text-[0.7rem] text-bone/40">
           <span className="text-gold">$</span> git log --graph main
         </p>
@@ -370,8 +369,8 @@ export function BuildGraph() {
         <div className="absolute inset-x-0 top-1/2 h-px bg-bone/10" />
         <motion.div className="absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 origin-left bg-gold" style={{ scaleX: p }} />
         <span className="absolute top-1/2 left-0 -translate-y-[calc(100%+8px)] font-mono text-[0.62rem] text-bone/35">main</span>
-        {WEEKS.map((w, i) => (
-          <Commit key={w.week} i={i} p={p} />
+        {STEPS.map((w, i) => (
+          <Commit key={w.hash} i={i} p={p} />
         ))}
       </div>
 
@@ -379,8 +378,8 @@ export function BuildGraph() {
       <ol className="relative ml-2 space-y-6 md:hidden">
         <span className="absolute top-1 bottom-1 left-0 w-px bg-bone/10" />
         <motion.span className="absolute top-1 bottom-1 left-0 w-[2px] -translate-x-1/2 origin-top bg-gold" style={{ scaleY: p }} />
-        {WEEKS.map((w, i) => (
-          <MobileCommit key={w.week} i={i} p={p} />
+        {STEPS.map((w, i) => (
+          <MobileCommit key={w.hash} i={i} p={p} />
         ))}
       </ol>
     </div>

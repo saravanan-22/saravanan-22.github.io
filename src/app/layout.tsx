@@ -25,6 +25,13 @@ export const metadata: Metadata = {
     "React",
     "TypeScript",
     "MySQL",
+    "Python",
+    "FastAPI",
+    "PostgreSQL",
+    "OCR API",
+    "document AI",
+    "KYC automation",
+    "LendOCR",
   ],
 };
 

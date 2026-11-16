@@ -29,7 +29,7 @@ export const stats = [
 export const skills = [
   {
     group: "Languages",
-    items: ["Go (Golang)", "TypeScript", "JavaScript", "SQL", "HTML / CSS"],
+    items: ["Go (Golang)", "Python", "TypeScript", "JavaScript", "SQL", "HTML / CSS"],
   },
   {
     group: "Front end",
@@ -37,11 +37,15 @@ export const skills = [
   },
   {
     group: "Back end",
-    items: ["Go Fiber", "REST APIs", "MySQL", "Redis", "Node.js / Express", "MongoDB"],
+    items: ["Go Fiber", "FastAPI", "REST APIs", "MySQL", "PostgreSQL", "Redis", "Node.js / Express", "MongoDB"],
+  },
+  {
+    group: "AI / OCR",
+    items: ["RapidOCR (PP-OCR)", "PaddleOCR-VL", "vLLM", "ONNX Runtime (GPU)", "PDF parsing"],
   },
   {
     group: "Cloud & tools",
-    items: ["AWS S3 (file storage)", "AWS SES (email)", "Docker", "Git", "Bitbucket"],
+    items: ["AWS S3 (file storage)", "AWS SES (email)", "Docker", "nginx", "Prometheus / Grafana", "GitHub Actions", "Git", "Bitbucket"],
   },
   {
     group: "Integrations",
@@ -296,131 +300,153 @@ export const workAreas = [
   },
 ];
 
-// Main project: in progress. Fill in `repo` / `demo` once they are public.
-export const loanDocs = {
-  name: "LoanDocs",
-  subtitle: "OCR + PDF toolkit for lending",
-  status: "In progress",
+// Main project. The API code is private (it is a commercial product); the
+// product website is public and shows real API output.
+export const lendOcr = {
+  name: "LendOCR",
+  subtitle: "OCR API for Indian KYC and loan documents",
+  status: "Working MVP",
   started: "Nov 2026",
-  license: "Open source",
+  label: "Python · FastAPI · GPU OCR",
   repo: "",
-  demo: "",
+  site: "https://saravanan-22.github.io/lendocr-website/",
   oneLiner:
-    "A free, self-hosted toolkit that reads Indian KYC and loan documents and generates ready-to-send loan PDFs, through a REST API, a web screen or one Docker command.",
+    "An API that reads 14 kinds of Indian KYC and loan documents (photos, scans or PDFs) and returns checked, structured JSON in about 0.2 seconds, with a clear flag when a person should look.",
   problem:
-    "Small lenders, NBFCs, cooperative banks, DSAs and CA firms pay per document for KYC APIs and still build loan letters by hand in Word. Aadhaar and bank data shouldn’t go to unknown cloud services.",
+    "Lenders still type PAN, Aadhaar, bank statement and salary slip details by hand, or pay per document for OCR that reads text but doesn’t check it. A wrong digit in a PAN or a doctored bank statement goes straight into the loan file.",
   solution:
-    "One self-hosted package that combines Indian document validation with loan-specific PDFs. Aadhaar is masked by default and uploaded files are deleted after processing.",
+    "A production-style API: open-source OCR models on the GPU, a validator for every number (Verhoeff, GSTIN, MRZ check digits, IFSC), bank statement analysis, API keys with quotas, background jobs with signed webhooks, and monitoring. Built and tested end to end on a laptop at zero cost.",
   modules: [
     {
-      name: "Read documents",
-      tag: "OCR",
+      name: "Read 14 documents",
+      tag: "OCR + validation",
       points: [
-        "PAN, Aadhaar, GST certificate, cheque, bank statement, salary slip, voter ID, driving licence, utility bill",
-        "PAN format and holder type, Aadhaar Verhoeff checksum, GSTIN checksum and state code, IFSC lookup",
-        "Bank statement running-balance check; salary slip net = gross − deductions",
+        "PAN, Aadhaar, voter ID, driving licence, passport, cheque, bank statement, utility bills, motor insurance, ITR-V, salary slip, GST and Udyam",
+        "Detects the document type; digital PDFs read directly, scans and password-protected PDFs rendered and OCR’d",
+        "Aadhaar Verhoeff, GSTIN mod-36, passport MRZ check digits, PAN / DL / vehicle formats; OCR slips repaired only where a checksum proves it",
       ],
     },
     {
-      name: "Cross-document match",
-      tag: "Key feature",
+      name: "Bank statement analysis",
+      tag: "Lending logic",
       points: [
-        "Compares name, date of birth and address across every uploaded document",
-        "Returns a match score, e.g. “PAN name matches Aadhaar 96%, address mismatch on utility bill”",
+        "Every transaction categorised: salary, EMI, ATM, cheque bounce, cash deposit",
+        "Monthly salary, EMI load, bounces and average daily balance for the credit decision",
+        "Tamper check: re-adds every row and flags balances that don’t carry forward",
       ],
     },
     {
-      name: "Generate documents",
-      tag: "PDF",
+      name: "Sold as an API",
+      tag: "Security",
       points: [
-        "Sanction letter, EMI schedule, statement of account, receipt with QR, foreclosure quote, NOC, interest certificate, demand notice, KYC summary",
-        "HTML templates with placeholders: logo, colours, language and wording change without code",
+        "Live and test API keys stored only as HMAC-SHA256 hashes, with scopes per key",
+        "Token-bucket rate limits shared through Postgres, monthly quotas and usage metering",
+        "Admin API and CLI to create organisations and keys; no document is stored by the extract API",
       ],
     },
     {
-      name: "Loan calculators",
-      tag: "Finance",
+      name: "Built to scale",
+      tag: "Reliability",
       points: [
-        "EMI (reducing and flat), amortisation schedule, prepayment effect",
-        "Foreclosure amount on any date with per-day interest, penal interest",
-        "Indian number format (1,23,456.00) and amount in words",
+        "Concurrency gate with backpressure (503 + Retry-After), batch uploads, nginx load balancer over replicas",
+        "Postgres job queue (SKIP LOCKED, leases, retries), AES-256-GCM encrypted files, HMAC-signed webhooks",
+        "Prometheus metrics, Grafana dashboard, 8 alert rules; about 15 documents per second on one GPU",
       ],
     },
   ],
+  // Inner ring of the stack orbit: the core service.
+  core: ["Python", "FastAPI", "PostgreSQL"],
   stack: [
-    "Go (Fiber)",
-    "Tesseract / PaddleOCR",
-    "Poppler",
-    "chromedp / Gotenberg",
-    "React + TypeScript",
-    "Vite + Tailwind",
+    "Python",
+    "FastAPI",
+    "PostgreSQL",
+    "RapidOCR (PP-OCR)",
+    "PaddleOCR-VL",
+    "vLLM",
+    "ONNX Runtime GPU",
     "Docker Compose",
-    "OpenAPI",
-    "Go unit tests",
+    "nginx",
+    "Prometheus · Grafana",
+    "pytest · GitHub Actions",
   ],
-  roadmap: [
-    { week: "01", scope: "feat(validate)", build: "Go API, Docker, PAN / GSTIN / Aadhaar / IFSC validators" },
-    { week: "02", scope: "feat(calc)", build: "EMI, schedule, foreclosure, amount in words" },
-    { week: "03", scope: "feat(pdf)", build: "PDF engine and first 3 templates" },
-    { week: "04", scope: "feat(ocr)", build: "OCR engine with PAN, Aadhaar and GST extractors" },
-    { week: "05", scope: "feat(match)", build: "Cheque, voter ID, utility bill and cross-document match" },
-    { week: "06", scope: "feat(web)", build: "React demo: upload, preview, JSON view, PDF download" },
-    { week: "07", scope: "feat(templates)", build: "8+ templates with logo and colour options" },
-    { week: "08", scope: "release", build: "Docs, demo GIF, public demo and v1.0 release" },
+  // Real commits from the (private) repo, oldest first.
+  history: [
+    { hash: "5aa2586", scope: "feat(validate)", build: "Checksum validators and FastAPI skeleton" },
+    { hash: "13631df", scope: "perf(ocr)", build: "RapidOCR on the GPU, about 8× faster" },
+    { hash: "e5feaf7", scope: "feat(vl)", build: "PaddleOCR-VL accurate tier served by vLLM" },
+    { hash: "0947662", scope: "feat(docs)", build: "Extractors for 14 documents and statement analysis" },
+    { hash: "8e0cf5d", scope: "feat(auth)", build: "API keys, rate limits, quotas, usage metering" },
+    { hash: "73e07d6", scope: "test(eval)", build: "Accuracy harness on blurred, rotated, dim copies" },
+    { hash: "4ad4025", scope: "feat(scale)", build: "Backpressure, batch, nginx load balancer" },
+    { hash: "bfb6b8b", scope: "feat(jobs)", build: "Background jobs, signed webhooks, monitoring" },
   ],
+  historyEnd: "160 tests · CI passing",
+  results: [
+    { value: "14", label: "Indian document types" },
+    { value: "0.15 s", label: "Per card on a laptop GPU" },
+    { value: "100%", label: "Fields read on the test set*" },
+    { value: "160", label: "Automated tests in CI" },
+  ],
+  resultsNote:
+    "*552 fields across 107 synthetic documents, including blurred, rotated, compressed and phone-photo copies, with no wrong field left unflagged. Real-world accuracy is measured per customer in a pilot.",
 };
 
-// Sample API calls shown in the LoanDocs demo panel (fake sample data only).
-export const loanDocsApi = [
+// Real API responses for synthetic sample documents (shortened), shown in the
+// LendOCR console panel.
+export const lendOcrApi = [
   {
-    label: "Read",
-    request: "POST /v1/ocr/extract",
+    label: "Extract",
+    request: "POST /v1/documents:extract  pan.jpg",
     response: `{
-  "document_type": "PAN",
+  "document_type": "pan",
   "fields": {
-    "pan": "ABCPR1234F",
-    "name": "SARAVANAN R",
-    "dob": "1990-04-12"
+    "pan":  { "value": "ABCPK1234F", "confidence": 1.0 },
+    "name": { "value": "RAVI KUMAR", "confidence": 0.992 },
+    "dob":  { "value": "1990-04-12", "confidence": 1.0 }
   },
   "checks": {
-    "pan_format": "pass",
-    "holder_type": "Individual"
+    "pan_format": true,
+    "name_matches_pan": true
   },
-  "confidence": 0.94
+  "needs_review": false,
+  "processing_ms": 148
 }`,
   },
   {
-    label: "Calculate",
-    request: "POST /v1/calc/emi",
+    label: "Statement",
+    request: "POST /v1/documents:extract  statement.pdf",
     response: `{
-  "amount": 500000,
-  "annual_rate": 10.5,
-  "tenure_months": 36,
-  "emi": 16251.22,
-  "total_interest": 85043.98,
-  "schedule": [
-    { "month": 1, "principal": 11876.22,
-      "interest": 4375.00, "balance": 488123.78 },
-    { "month": 2, "principal": 11980.14,
-      "interest": 4271.08, "balance": 476143.64 }
+  "document_type": "bank_statement",
+  "checks": {
+    "balance_continuity": true,
+    "closing_balance_matches": true
+  },
+  "data": { "analysis": {
+    "salary":   { "monthly_estimate": "53000.00" },
+    "emi_loan": { "monthly_average": "18500.00" },
+    "bounces":  { "count": 1 },
+    "average_balance": "84915.02"
+  } },
+  "needs_review": false,
+  "processing_ms": 19
+}`,
+  },
+  {
+    label: "Jobs",
+    request: "POST /v1/jobs  20 files + webhook_url",
+    response: `{
+  "jobs": [
+    { "id": "job_7f3c…", "status": "queued",
+      "file_name": "statement_oct.pdf", "attempts": 0 },
+    …19 more
   ]
-}`,
-  },
-  {
-    label: "Generate",
-    request: "POST /v1/pdf/sanction-letter",
-    response: `{
-  "template": "sanction-letter",
-  "data": {
-    "borrower": "SARAVANAN R",
-    "amount": "₹5,00,000.00",
-    "amount_in_words": "Five Lakh Rupees Only",
-    "rate": "10.5% p.a.",
-    "tenure": "36 months",
-    "emi": "₹16,251.22"
-  }
 }
-→ 200 OK  application/pdf`,
+→ 202 Accepted  in 52 ms
+
+POST https://lender.example/hooks
+X-LendOCR-Signature: t=1763190000,v1=9b1e…
+{ "event": "job.succeeded",
+  "document_type": "bank_statement", "needs_review": false }`,
   },
 ];
 
@@ -481,7 +507,7 @@ export const learningPlan = [
       {
         name: "Go concurrency in depth",
         why: "Goroutines, channels, worker pools, context cancellation and pprof profiling.",
-        practice: "Parallel OCR workers in LoanDocs",
+        practice: "Go worker pool for a document queue",
       },
       {
         name: "Transactions & isolation levels",
@@ -525,7 +551,7 @@ export const learningPlan = [
       {
         name: "Microservices with gRPC",
         why: "Service boundaries, protobuf contracts and API versioning.",
-        practice: "Split OCR and PDF into services",
+        practice: "Split OCR into a gRPC service",
       },
       {
         name: "Advanced Redis",
@@ -557,7 +583,7 @@ export const learningPlan = [
       {
         name: "Kubernetes & infrastructure as code",
         why: "Production containers, autoscaling, Terraform and CI/CD pipelines.",
-        practice: "Deploy LoanDocs to Kubernetes",
+        practice: "Deploy LendOCR to Kubernetes",
       },
     ],
   },
